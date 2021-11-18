@@ -10,6 +10,7 @@ import GlobalJavascriptLoader from '../common/loader/GlobalJavascriptLoader';
 import SelectedUsers from '../common/model/SelectedUsers';
 
 import OverviewTable from './OverviewTable';
+import ReviewTable from './ReviewTable';
 import OverviewTeamGraphView from './OverviewTeamGraphView';
 
 export default class OverviewPage extends React.Component {
@@ -104,6 +105,10 @@ export default class OverviewPage extends React.Component {
                     <Panel title='Overview' size='flex'>
                         <OverviewTable {...overviewProps} />
                     </Panel>
+                    <ClearFloat />
+                    <Panel title='Review Characteristics' size='flex'>
+                        <ReviewTable {...overviewProps} />
+                    </Panel> 
                     <ClearFloat />
                     <a name='teamGraph' ref='teamGraphHashLink'></a>
                     <OverviewTeamGraphView {...teamGraphProps} />

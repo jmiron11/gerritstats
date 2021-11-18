@@ -42,7 +42,7 @@ public class CommitFilter {
 
     public boolean isIncluded(@Nullable Commit.Identity identity) {
         if (identity == null || identity.email == null) {
-            return includeEmptyEmails;
+            return false;
         } else {
             if (!includedEmails.isEmpty()) {
                 return includedEmails.contains(identity.email);

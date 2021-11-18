@@ -50,6 +50,21 @@ public class PerPersonDataProcessor extends CommitDataProcessor<PerPersonData> {
                     IdentityRecord reviewerRecord = getOrCreateRecord(identity);
                     if (!commit.owner.equals(reviewerRecord.identity)) {
                         reviewerRecord.addReviewedCommit(commit);
+
+                        // Find the first comment made by this user in the commit.
+                        long earliest_comment = 0;
+                        for (int i = 0; i < commit.comments.size(); ++i) {
+                          Commit.ChangeComment comment = commit.comments.get(i);
+                          if (reviewerRecord.identity.equals(comment.reviewer)) {
+                            if (earliest_comment == 0 || comment.timestamp < earliest_comment) {
+                              earliest_comment = comment.timestamp;
+                            } 
+                          }
+                        }
+
+                        if (earliest_comment != 0) {
+			                    reviewerRecord.updateAverageTimeToFirstComment(earliest_comment - commit.createdOnDate);
+                        }
                     }
                 }
             }
@@ -63,15 +78,20 @@ public class PerPersonDataProcessor extends CommitDataProcessor<PerPersonData> {
                     }
                     switch (approval.type) {
                         case Commit.Approval.TYPE_CODE_REVIEW: {
-                            if (getCommitFilter().isIncluded(approval.grantedBy)
-                                    && !ownerRecord.identity.equals(approval.grantedBy)) {
+                            if (getCommitFilter().isIncluded(approval.grantedBy)) {
+                               IdentityRecord approverRecord = getOrCreateRecord(approval.grantedBy);
+			                         approverRecord.updateAverageTimeToApproval(approval.grantedOnDate - commit.createdOnDate);
+
+                              if(!ownerRecord.identity.equals(approval.grantedBy)) {
                                 ownerRecord.addApprovalForOwnCommit(approval.grantedBy, approval);
+                              }
                             }
+
                             break;
                         }
                         case Commit.Approval.TYPE_SUBMITTED: {
-                            ownerRecord.updateAverageTimeInCodeReview(approval.grantedOnDate - commit.createdOnDate);
-                            break;
+                           ownerRecord.updateAverageTimeInCodeReview(approval.grantedOnDate - commit.createdOnDate);
+                           break;
                         }
                         default:
                             break;

@@ -23,7 +23,7 @@ function decimalComparator(left, right) {
     }
 }
 
-export default class OverviewTable extends React.Component {
+export default class ReviewTable extends React.Component {
     constructor(props) {
         super(props);
 
@@ -64,111 +64,138 @@ export default class OverviewTable extends React.Component {
                     </Td>
                 ),
             },
-            'reviewCountPlus2': {
+            'allCommentsWritten': {
                 sortFunction: Reactable.Sort.NumericInteger,
-                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'reviewCountPlus2'),
-                description: 'Number of +2 reviews given by this user.',
-                header: (<span>+2<br/>given</span>),
+                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'allCommentsWritten'),
+                description: 'Number of review comments written to other people\'s commits by this user.',
+                header: (<span>Comments<br/>written</span>),
                 cell: (record, index) => (
-                    <Td key={'reviewCountPlus2' + index} column='reviewCountPlus2'
-                        style={this.computeCellStyle(index, 'reviewCountPlus2')}>
-                        {record.reviewCountPlus2}
+                    <Td key={'allCommentsWritten' + index}
+                        column='allCommentsWritten' style={this.computeCellStyle(index, 'allCommentsWritten')}>
+                        {record.allCommentsWritten}
                     </Td>
                 ),
             },
-            'reviewCountPlus1': {
-                sortFunction: Reactable.Sort.NumericInteger,
-                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'reviewCountPlus1'),
-                description: 'Number of +1 reviews given by this user.',
-                header: (<span>+1<br/>given</span>),
-                cell: (record, index) => (
-                    <Td key={'reviewCountPlus1' + index} column='reviewCountPlus1'
-                        style={this.computeCellStyle(index, 'reviewCountPlus1')}>
-                        {record.reviewCountPlus1}
-                    </Td>
-                ),
-            },
-            'reviewCountMinus1': {
-                sortFunction: Reactable.Sort.NumericInteger,
-                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'reviewCountMinus1'),
-                description: 'Number of -1 reviews given by this user.',
-                header: (<span>-1<br/>given</span>),
-                cell: (record, index) => (
-                    <Td key={'reviewCountMinus1' + index} column='reviewCountMinus1'
-                        style={this.computeCellStyle(index, 'reviewCountMinus1')}>
-                        {record.reviewCountMinus1}
-                    </Td>
-                ),
-            },
-            'reviewCountMinus2': {
-                sortFunction: Reactable.Sort.NumericInteger,
-                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'reviewCountMinus2'),
-                description: 'Number of -2 reviews given by this user.',
-                header: (<span>-2<br/>given</span>),
-                cell: (record, index) => (
-                    <Td key={'reviewCountMinus2' + index} column='reviewCountMinus2'
-                        style={this.computeCellStyle(index, 'reviewCountMinus2')}>
-                        {record.reviewCountMinus2}
-                    </Td>
-                ),
-            },
-            'allCommentsReceived': {
-                sortFunction: Reactable.Sort.NumericInteger,
-                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'allCommentsReceived')
-                                 .setIsAscending(true)
-                                 .setIgnoreFunction((element) => element.commitCount == 0),
-                description: 'Number of review comments received by this user.',
-                header: (<span>Comments<br/>received</span>),
-                cell: (record, index) => (
-                    <Td key={'allCommentsReceived' + index} column='allCommentsReceived'
-                        style={this.computeCellStyle(index, 'allCommentsReceived')}>
-                        {record.allCommentsReceived}
-                    </Td>
-                ),
-            },
-            'commitCount': {
-                sortFunction: Reactable.Sort.NumericInteger,
-                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'commitCount')
-                                 .setIgnoreZeroes(true),
-                description: 'Number of commits made by this user.',
-                header: 'Commits',
-                cell: (record, index) => (
-                    <Td key={'commitCount' + index} column='commitCount'
-                        style={this.computeCellStyle(index, 'commitCount')}>
-                        {record.commitCount}
-                    </Td>
-                ),
-            },
-            'receivedCommentRatio': {
+            'reviewCommentRatio': {
                 sortFunction: decimalComparator,
-                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'receivedCommentRatio')
-                                 .setIsAscending(true)
-                                 .setIgnoreFunction((element) => element.commitCount == 0),
-                description: 'The ratio of comments received by user per commit.',
-                header: (<span>Comments<br/>/ commit</span>),
+                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'reviewCommentRatio'),
+                description: 'The ratio of comments written by this user per a review request.',
+                header: (<span>Comments<br/>/ review<br/>requests</span>),
                 cell: (record, index) => (
-                    <Td key={'receivedCommentRatio' + index} column='receivedCommentRatio'
-                        value={record.receivedCommentRatio}
-                        style={this.computeCellStyle(index, 'receivedCommentRatio')}>
-                        {numeral(record.receivedCommentRatio).format('0.000')}
+                    <Td key={'reviewCommentRatio' + index} column='reviewCommentRatio'
+                        value={record.reviewCommentRatio}
+                        style={this.computeCellStyle(index, 'reviewCommentRatio')}>
+                        {numeral(record.reviewCommentRatio).format('0.000')}
                     </Td>
                 ),
             },
-          'averageTimeInCodeReview': {
+            'addedAsReviewerToCount': {
                 sortFunction: Reactable.Sort.NumericInteger,
-                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'averageTimeInCodeReview')
+                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'addedAsReviewerToCount'),
+                description: 'Number of times this user was added as a reviewer.',
+                header: (<span>Added as<br/>reviewer</span>),
+                cell: (record, index) => (
+                    <Td key={'addedAsReviewerToCount' + index} column='addedAsReviewerToCount'
+                        style={this.computeCellStyle(index, 'addedAsReviewerToCount')}>
+                        {record.addedAsReviewerToCount}
+                    </Td>
+                ),
+            },
+            'averageTimeToApprove': {
+                sortFunction: Reactable.Sort.NumericInteger,
+                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'averageTimeToApprove')
                                  .setIsAscending(true)
                                  .setIgnoreZeroes(true),
-                description: 'Average time the user\'s commits spent in review.',
-                header: (<span>Average time<br/>in review</span>),
+                description: 'Average time the user\'s spends reviewing before approving.',
+                header: (<span>Average time<br/>reviewing before approving</span>),
                 cell: (record, index) => (
-                    <Td key={'averageTimeInCodeReview' + index}
-                        column='averageTimeInCodeReview' value={record.averageTimeInCodeReview}
-                        style={this.computeCellStyle(index, 'averageTimeInCodeReview')}>
-                        {formatPrintableDuration(record.averageTimeInCodeReview)}
+                    <Td key={'averageTimeToApprove' + index}
+                        column='averageTimeToApprove' value={record.averageTimeToApprove}
+                        style={this.computeCellStyle(index, 'averageTimeToApprove')}>
+                        {formatPrintableDuration(record.averageTimeToApprove)}
                     </Td>
                 ),
             },
+ 
+
+            'TimeToApprove50p': {
+                sortFunction: Reactable.Sort.NumericInteger,
+                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'TimeToApprove50p')
+                                 .setIsAscending(true)
+                                 .setIgnoreZeroes(true),
+                description: '50p time the user\'s spends reviewing before approval.',
+                header: (<span>50p time<br/>reviewing until approval</span>),
+                cell: (record, index) => (
+                    <Td key={'TimeToApprove50p' + index}
+                        column='TimeToApprove50p' value={record.TimeToApprove50p}
+                        style={this.computeCellStyle(index, 'TimeToApprove50p')}>
+                        {formatPrintableDuration(record.TimeToApprove50p)}
+                    </Td>
+                ),
+            }, 
+            'TimeToApprove75p': {
+                sortFunction: Reactable.Sort.NumericInteger,
+                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'TimeToApprove75p')
+                                 .setIsAscending(true)
+                                 .setIgnoreZeroes(true),
+                description: '75p time the user\'s spends reviewing before approval.',
+                header: (<span>75p time<br/>reviewing until approval</span>),
+                cell: (record, index) => (
+                    <Td key={'TimeToApprove75p' + index}
+                        column='TimeToApprove75p' value={record.TimeToApprove75p}
+                        style={this.computeCellStyle(index, 'TimeToApprove75p')}>
+                        {formatPrintableDuration(record.TimeToApprove75p)}
+                    </Td>
+                ),
+            }, 
+            'TimeToComment50p': {
+                sortFunction: Reactable.Sort.NumericInteger,
+                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'TimeToComment50p')
+                                 .setIsAscending(true)
+                                 .setIgnoreZeroes(true),
+                description: '50p time the user\'s spends reviewing before commenting.',
+                header: (<span>50p time<br/>reviewing before commenting</span>),
+                cell: (record, index) => (
+                    <Td key={'TimeToComment50p' + index}
+                        column='TimeToComment50p' value={record.TimeToComment50p}
+                        style={this.computeCellStyle(index, 'TimeToComment50p')}>
+                        {formatPrintableDuration(record.TimeToComment50p)}
+                    </Td>
+                ),
+            }, 
+ 
+            'TimeToComment75p': {
+                sortFunction: Reactable.Sort.NumericInteger,
+                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'TimeToComment75p')
+                                 .setIsAscending(true)
+                                 .setIgnoreZeroes(true),
+                description: '75p time the user\'s spends reviewing before commenting.',
+                header: (<span>75p time<br/>reviewing before commenting</span>),
+                cell: (record, index) => (
+                    <Td key={'TimeToComment75p' + index}
+                        column='TimeToComment75p' value={record.TimeToComment75p}
+                        style={this.computeCellStyle(index, 'TimeToComment75p')}>
+                        {formatPrintableDuration(record.TimeToComment75p)}
+                    </Td>
+                ),
+            }, 
+                
+            'averageTimeToComment': {
+                sortFunction: Reactable.Sort.NumericInteger,
+                highlighter: new TableCellHighlighter(overviewUserdata, selectedUsers, 'averageTimeToComment')
+                                 .setIsAscending(true)
+                                 .setIgnoreZeroes(true),
+                description: 'Average time the user\'s spends reviewing before commenting.',
+                header: (<span>Average time<br/>reviewing before commenting</span>),
+                cell: (record, index) => (
+                    <Td key={'averageTimeToComment' + index}
+                        column='averageTimeToComment' value={record.averageTimeToComment}
+                        style={this.computeCellStyle(index, 'averageTimeToComment')}>
+                        {formatPrintableDuration(record.averageTimeToComment)}
+                    </Td>
+                ),
+            },
+ 
         };
     }
 
@@ -238,7 +265,7 @@ export default class OverviewTable extends React.Component {
         const isUserSelected = this.state.selectedUsers.isUserSelected(overviewRecord.identifier);
 
         const selectionStyle = {
-            color: isUserSelected ? '' : OverviewTable.COLOR_UNSELECTED
+            color: isUserSelected ? '' : ReviewTable.COLOR_UNSELECTED
         };
 
         var rowCells = Object.keys(this.state.columnMetadata).map(function(columnName) {
@@ -263,19 +290,19 @@ export default class OverviewTable extends React.Component {
     }
 }
 
-OverviewTable.displayName = 'OverviewTable';
+ReviewTable.displayName = 'ReviewTable';
 
-OverviewTable.defaultProps = {
+ReviewTable.defaultProps = {
     datasetOverview: {},
     overviewUserdata: [],
     onUserSelectionChanged: null
 };
 
-OverviewTable.propTypes = {
+ReviewTable.propTypes = {
     datasetOverview: React.PropTypes.object,
     overviewUserdata: React.PropTypes.array,
     selectedUsers: React.PropTypes.instanceOf(SelectedUsers).isRequired,
     onUserSelectionChanged: React.PropTypes.func
 };
 
-OverviewTable.COLOR_UNSELECTED = '#cccccc';
+ReviewTable.COLOR_UNSELECTED = '#cccccc';

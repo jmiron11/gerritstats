@@ -32,6 +32,11 @@ export default class ReviewsReceivedDetailsPanel extends React.Component {
                         title='avg time in code review'
                         tooltip='The average time the commits of this user spent in code review, before they were merged.'
                         value={formatPrintableDuration(userdata.getAverageTimeInCodeReview())} />
+                    <NumberPanel
+                        size='xWide'
+                        title='avg time before approving'
+                        tooltip='The average time the commits of this user spent in code review before the user approved.'
+                        value={formatPrintableDuration(userdata.getAverageTimeToApprove())} /> 
                 </HorizontalCenterDiv>
             </Panel>
         );

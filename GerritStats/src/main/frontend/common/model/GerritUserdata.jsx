@@ -435,6 +435,10 @@ export default class GerritUserdata {
         return this.record.averageTimeInCodeReview;
     }
 
+    getAverageTimeToApprove() {
+        return this.record.averageTimeToApprove;
+    }
+
     getCommentsWritten() {
         return this.record.commentsWritten.slice();
     }

@@ -49,6 +49,9 @@ public class IdentityRecord {
 
     private long averageTimeInCodeReview;
 
+    final ArrayList<Long> timeToApprove = new ArrayList<Long>();
+    final ArrayList<Long> timeToComment = new ArrayList<Long>();
+
     public static class ReviewerData {
         int addedAsReviewerCount;
         int approvalCount;
@@ -113,8 +116,63 @@ public class IdentityRecord {
         return averageTimeInCodeReview;
     }
 
+    public static long percentile(List<Long> latencies, double percentile) {
+      Collections.sort(latencies);
+      if (latencies.isEmpty()) {
+        return 0; 
+      }
+      int index = (int) Math.ceil(percentile / 100.0 * latencies.size());
+      return latencies.get(index-1);
+    }
+
+    public long get50pTimeToApprove() {
+      return percentile(timeToApprove, 50);
+    }
+
+    public long get75pTimeToApprove() {
+      return percentile(timeToApprove, 75);
+    }
+
+    public long get50pTimeToComment() {
+      return percentile(timeToComment, 50);
+    }
+
+    public long get75pTimeToComment() {
+      return percentile(timeToComment, 75);
+    }
+
+    public long getAverageTimeToApprove() {
+        double sum = 0;
+        for(int i = 0; i < timeToApprove.size(); i++)
+          sum += timeToApprove.get(i); 
+        if (timeToApprove.size() > 0) { 
+          return (long)sum / timeToApprove.size();
+        } else {
+          return 0;
+        }
+    }
+
+    public long getAverageTimeToComment() {
+        double sum = 0;
+        for(int i = 0; i < timeToComment.size(); i++)
+          sum += timeToComment.get(i); 
+        if (timeToComment.size() > 0) { 
+          return (long)sum / timeToComment.size();
+        } else {
+          return 0;
+        }
+    }
+
     public String getPrintableAverageTimeInCodeReview() {
         return formatPrintableDuration(averageTimeInCodeReview);
+    }
+
+    public String getPrintableAverageTimeToApprove() {
+        return formatPrintableDuration(getAverageTimeToApprove());
+    }
+
+    public String getPrintableAverageTimeToComment() {
+        return formatPrintableDuration(getAverageTimeToComment());
     }
 
     public String getEmail() {
@@ -386,6 +444,14 @@ public class IdentityRecord {
         int prevCount = commits.size() - 1;
         long newAverage = averageTimeInCodeReview * prevCount;
         averageTimeInCodeReview = (newAverage + commitTimeInCodeReviewMsec) / commits.size();
+    }
+
+    void updateAverageTimeToApproval(long commitTimeInCodeReviewMsec) {
+        timeToApprove.add(commitTimeInCodeReviewMsec);
+    }
+
+    void updateAverageTimeToFirstComment(long timeToCommentMsec) {
+        timeToComment.add(timeToCommentMsec);
     }
 
     private static String formatPrintableDuration(long duration) {

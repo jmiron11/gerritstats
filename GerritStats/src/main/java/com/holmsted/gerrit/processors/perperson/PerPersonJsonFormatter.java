@@ -55,14 +55,22 @@ class PerPersonJsonFormatter implements CommitDataProcessor.OutputFormatter<PerP
         }
 
         IdentityRecordList orderedList = data.toOrderedList(new AlphabeticalOrderComparator());
+        IdentityRecordList filteredList = new IdentityRecordList();
+
+        for (int i = 0; i < orderedList.size(); ++i) {
+          IdentityRecord e = orderedList.get(i);
+          if (e.commits.size() > 0) {
+            filteredList.add(e);
+          }
+        }
 
         for (Identity identity : data.keySet()) {
             identities.put(identity.getIdentifier(), identity);
         }
 
-        createOverviewJs(orderedList);
+        createOverviewJs(filteredList);
         createDatasetOverviewJs(data);
-        createPerPersonFiles(orderedList);
+        createPerPersonFiles(filteredList);
         createIdsJs();
 
         System.out.println("Output written to " + outputDir.getAbsolutePath());
@@ -220,6 +228,13 @@ class PerPersonJsonFormatter implements CommitDataProcessor.OutputFormatter<PerP
             json.add("allCommentsReceived", context.serialize(identityRecord.getAllCommentsReceived().size()));
             json.add("commitCount", context.serialize(identityRecord.getCommits().size()));
             json.add("averageTimeInCodeReview", context.serialize(identityRecord.getAverageTimeInCodeReview()));
+            json.add("averageTimeToApprove", context.serialize(identityRecord.getAverageTimeToApprove()));
+            json.add("TimeToApprove50p", context.serialize(identityRecord.get50pTimeToApprove()));
+            json.add("TimeToApprove75p", context.serialize(identityRecord.get75pTimeToApprove()));
+            json.add("averageTimeToApprove", context.serialize(identityRecord.getAverageTimeToApprove()));
+            json.add("averageTimeToComment", context.serialize(identityRecord.getAverageTimeToComment()));
+            json.add("TimeToComment50p", context.serialize(identityRecord.get50pTimeToComment()));
+            json.add("TimeToComment75p", context.serialize(identityRecord.get75pTimeToComment())); 
             json.add("receivedCommentRatio", context.serialize(identityRecord.getReceivedCommentRatio()));
             json.add("reviewCommentRatio", context.serialize(identityRecord.getReviewCommentRatio()));
             json.add("addedAsReviewerToCount", context.serialize(identityRecord.addedAsReviewerTo.size()));
